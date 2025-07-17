@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 from InquirerPy import inquirer
 from datetime import datetime
 import pytz
+from description_generator import generate_description
+from git_log_reader import get_todays_git_logs
 
 # Load environment variables
 load_dotenv()
@@ -42,8 +44,19 @@ def interactive_add_time_entry():
         choices=project_choices
     ).execute()
 
-    # Prompt for description and times
-    description = inquirer.text(message="Enter description:").execute()
+
+    # Ask if user wants to use git commit messages
+    use_git = inquirer.confirm(message="Use today's git commit messages for description?", default=False).execute()
+    if use_git:
+        git_logs = get_todays_git_logs()
+        info = "\n".join(git_logs) if git_logs else "No commits today."
+        print("Using git commit messages:", info)
+    else:
+        info = inquirer.text(message="Enter brief info for description:").execute()
+
+    # Generate description using ChatGPT
+    description = generate_description(info)
+    print("Generated description:", description)
 
     today_str = datetime.utcnow().strftime("%Y-%m-%d")
     date = inquirer.text(
@@ -95,7 +108,7 @@ def interactive_add_time_entry():
     if response.status_code == 201:
         print("✅ Time entry created successfully!")
     else:
-        print("❌ Failed to create time entry")
+        print("Failed to create time entry")
         print("Status Code:", response.status_code)
         print("Response:", response.text)
 
