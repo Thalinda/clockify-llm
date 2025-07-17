@@ -10,7 +10,7 @@ openai_api_key = os.getenv("OPENAI_API_KEY")
 llm = ChatOpenAI(api_key=openai_api_key, model_name="gpt-3.5-turbo")
 prompt = ChatPromptTemplate.from_template(
     """
-    You are a helpful assistant for time tracking. Given a short user input, generate a descriptive Clockify time entry description (max 100 characters). Be concise and clear.
+    You are a helpful assistant for time tracking. Given a short user input and also if git commit also there use that to generate the description, generate a detailed and informative Clockify time entry description (max 100 characters). Be specific about the activity, task, or context based on the input. Do not mention LangChain or AI unless the user input is about those topics.
     User input: {info}
     Description:
     """

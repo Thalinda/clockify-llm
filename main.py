@@ -7,7 +7,7 @@ import pytz
 from description_generator import generate_description
 from git_log_reader import get_todays_git_logs
 
-# Load environment variables
+
 load_dotenv()
 
 api_key = os.getenv("CLOCKIFY_API_TOKEN")
@@ -28,7 +28,7 @@ def get_projects(workspace_id: str):
     return response.json()
 
 def interactive_add_time_entry():
-    # Select workspace
+ 
     workspaces = get_workspaces()
     workspace_choices = [{"name": ws["name"], "value": ws["id"]} for ws in workspaces]
     selected_workspace = inquirer.select(
@@ -36,7 +36,7 @@ def interactive_add_time_entry():
         choices=workspace_choices
     ).execute()
 
-    # Select project
+  
     projects = get_projects(selected_workspace)
     project_choices = [{"name": proj["name"], "value": proj["id"]} for proj in projects]
     selected_project = inquirer.fuzzy(
@@ -45,7 +45,7 @@ def interactive_add_time_entry():
     ).execute()
 
 
-    # Ask if user wants to use git commit messages
+   
     use_git = inquirer.confirm(message="Use today's git commit messages for description?", default=False).execute()
     if use_git:
         git_logs = get_todays_git_logs()
@@ -54,7 +54,7 @@ def interactive_add_time_entry():
     else:
         info = inquirer.text(message="Enter brief info for description:").execute()
 
-    # Generate description using ChatGPT
+    
     description = generate_description(info)
     print("Generated description:", description)
 
@@ -84,11 +84,10 @@ def interactive_add_time_entry():
         print("End time must be after start time.")
         return
 
-    # Convert to UTC
+    
     start_time_utc = start_local.astimezone(pytz.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     end_time_utc = end_local.astimezone(pytz.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
-    # Prepare API payload
     payload = {
         "billable": True,
         "customAttributes": [],
@@ -100,11 +99,11 @@ def interactive_add_time_entry():
         "type": "REGULAR"
     }
 
-    # Send request
+
     url = f"{base_url}/workspaces/{selected_workspace}/time-entries"
     response = requests.post(url, headers=getHeader(), json=payload)
 
-    # Handle response
+
     if response.status_code == 201:
         print("✅ Time entry created successfully!")
     else:
@@ -112,6 +111,5 @@ def interactive_add_time_entry():
         print("Status Code:", response.status_code)
         print("Response:", response.text)
 
-# Entry point
 if __name__ == "__main__":
     interactive_add_time_entry()
