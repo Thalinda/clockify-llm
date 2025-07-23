@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from InquirerPy import inquirer
 from datetime import datetime
 import pytz
-from description_generator import generate_description
+from description_generator import generate_description, get_llm
 from git_log_reader import get_todays_git_logs
 
 load_dotenv()
@@ -62,7 +62,8 @@ def interactive_add_time_entry():
     else:
         info = inquirer.text(message="Enter brief info for description:").execute()
 
-    description = generate_description(info).strip()
+    llm = get_llm()
+    description = generate_description(llm, info).strip()
     print("\nGenerated description:", description)
 
     # --- Date Input ---
