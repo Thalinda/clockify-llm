@@ -41,17 +41,44 @@ def get_llm():
         model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.float16)
         return ChatHuggingFace(model=model, tokenizer=tokenizer)
 
+def set_env_var(key, value):
+    """Set or update a key-value pair in the .env file."""
+    env_path = os.path.join(os.path.dirname(__file__), '.env')
+    lines = []
+    if os.path.exists(env_path):
+        with open(env_path, 'r') as f:
+            lines = f.readlines()
+    updated = False
+    for i, line in enumerate(lines):
+        if line.startswith(f'{key}='):
+            lines[i] = f'{key}={value}\n'
+            updated = True
+            break
+    if not updated:
+        lines.append(f'{key}={value}\n')
+    with open(env_path, 'w') as f:
+        f.writelines(lines)
+    print(f"Set {key} in .env file.")
+
+def setup_keys():
+    openai_key = input("Enter your OpenAI API Key: ").strip()
+    clockify_key = input("Enter your Clockify API Token: ").strip()
+    set_env_var("OPENAI_API_KEY", openai_key)
+    set_env_var("CLOCKIFY_API_TOKEN", clockify_key)
+    print("API keys saved to .env.")
+
 def print_help():
     help_text = '''
 Clockify LLM Console Tool
 
 Usage:
-  python llm_config.py [--help] [--choose-llm] [--show-choice]
+  python llm_config.py [--help] [--choose-llm] [--show-choice] [--setup-keys]
 
 Options:
   --help           Show this help message and exit
   --choose-llm     Prompt to choose and save LLM provider
   --show-choice    Display the currently selected LLM provider
+  --setup-keys     Setup OpenAI and Clockify API keys in .env file
 '''
     print(help_text)
 
@@ -73,6 +100,7 @@ def main():
     parser.add_argument('--help', action='store_true')
     parser.add_argument('--choose-llm', action='store_true')
     parser.add_argument('--show-choice', action='store_true')
+    parser.add_argument('--setup-keys', action='store_true')
     args = parser.parse_args()
 
     if args.help:
@@ -81,6 +109,8 @@ def main():
         choose_llm()
     elif args.show_choice:
         show_choice()
+    elif args.setup_keys:
+        setup_keys()
     else:
         print_help()
 
