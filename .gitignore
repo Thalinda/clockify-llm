@@ -1,3 +1,38 @@
 .venv
 __pycache__
 .env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+
+# Environment
+.env
+
+# VSCode
+.vscode/
+
+# OS
+.DS_Store
+
+# Clockify LLM
+llm_choice.txt
+
+# Build
+build/
+dist/
+
+# Pip
+pip-wheel-metadata/
+
+# Dependency
+*.log
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Misc
+*.sqlite3
+*.db
