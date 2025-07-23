@@ -19,4 +19,5 @@ setup(
     author="Thalinda Bandara",
     description="Clockify LLM Console Tool",
     python_requires=">=3.8",
-)
+) 
+    
