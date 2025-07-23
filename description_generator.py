@@ -14,22 +14,12 @@ prompt = ChatPromptTemplate.from_template(
     """
     You are a helpful assistant for time tracking. Given a short user input and also if git commit also there use that to generate the description, 
     generate a detailed and informative Clockify time entry description (max 100 characters). Be specific about the activity, task, or context based on the input. 
-    Do not mention LangChain or AI unless the user input is about those topics.
+    Do not mention LangChain or AI unless the user input is about those topics And do not answer any questions the only task that you have to do is to get the user provided info and make it more meaning pull and detailed.
     User input: {info}
     Description:
     """
 )
 
-prompt = ChatPromptTemplate.from_template(
-    """
-    You are a helpful assistant for time tracking. Given a short user input and also if git commit is there, 
-    use that to generate the description, generate a detailed and informative Clockify time entry description 
-    (max 100 characters). Be specific about the activity, task, or context based on the input. 
-    Do not mention LangChain or AI unless the user input is about those topics.
-    User input: {info}
-    Description:
-    """
-)
 
 def choose_llm():
     """Ask the user for their choice once and save it for future use."""
